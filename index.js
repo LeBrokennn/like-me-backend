@@ -49,3 +49,49 @@ app.post("/posts", async (req, res) => {
 app.listen(3000, () => {
   console.log("Servidor corriendo en http://localhost:3000");
 });
+
+app.put("/posts/like/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const consulta = `
+      UPDATE posts
+      SET likes = likes + 1
+      WHERE id = $1
+      RETURNING *
+    `;
+
+    const { rows } = await pool.query(consulta, [id]);
+
+    if (rows.length === 0) {
+      return res.status(404).send("Post no encontrado");
+    }
+
+    res.json(rows[0]);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error al actualizar likes");
+  }
+});
+
+app.delete("/posts/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { rowCount } = await pool.query(
+      "DELETE FROM posts WHERE id = $1",
+      [id]
+    );
+
+    if (rowCount === 0) {
+      return res.status(404).send("Post no encontrado");
+    }
+
+    res.send("Post eliminado correctamente");
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error al eliminar post");
+  }
+});
