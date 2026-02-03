@@ -1,4 +1,4 @@
-# 📸 Like Me - Backend (Parte I)
+# 📸 Like Me - Backend
 
 Desafío desarrollado con Node.js, Express y PostgreSQL para la creación y consulta de posts de la red social **Like Me**.
 
